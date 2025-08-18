@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Trouvez votre association de hockey mineur</title>
+  <style>
+    body { font-family: "Circular Std", Arial, sans-serif; background:#fff; margin:0; padding:20px; }
+    .container { max-width:800px; margin:0 auto; text-align:center; }
+    input { padding:10px; font-size:16px; border:1px solid #ccc; border-radius:8px; width:120px; text-transform:uppercase; }
+    button { padding:10px 20px; margin-left:10px; font-size:16px; background:#79c6e6; color:#fff; border:0; border-radius:8px; cursor:pointer; }
+    button:hover { opacity:0.9; }
+    .results { margin-top:20px; text-align:left; }
+    .block { margin:15px 0; padding:10px; border:1px solid #ddd; border-radius:8px; background:#f9f9f9; }
+    .block h3 { margin-top:0; }
+    a { color:#0645ad; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .notice { background:#fff8c5; padding:10px; border:1px solid #f0c36d; border-radius:8px; margin:10px 0; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.20.2/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Trouvez votre association de hockey mineur</h1>
+    <p>Entrez les <strong>3 premiers caractères</strong> de votre code postal (ex.: H3T) :</p>
+    <input type="text" id="fsa" maxlength="3" placeholder="H3T"/>
+    <button onclick="searchFSA()">Rechercher</button>
+    <div id="results" class="results"></div>
+  </div>
+
+<script>
+const EXCEL_URL = "https://toncompte.github.io/Codes-postaux.xlsx";
+let DATA = [];
+
+async function loadExcel() {
+  const res = await fetch(EXCEL_URL);
+  const buf = await res.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  DATA = XLSX.utils.sheet_to_json(ws);
+}
+loadExcel();
+
+function linkify(name, url) {
+  if (!name) return "";
+  if (url) return `<div><a href="${url}" target="_blank">${name}</a></div>`;
+  return `<div>${name}</div>`;
+}
+
+function searchFSA() {
+  const val = document.getElementById("fsa").value.trim().toUpperCase();
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = "";
+  if (!/^[A-Z]\d[A-Z]$/.test(val)) {
+    resultsDiv.innerHTML = "<div class='notice'>Veuillez entrer un code valide (ex.: H3T).</div>";
+    return;
+  }
+  const rows = DATA.filter(r => (r["Code postaux"]||"").toUpperCase() === val);
+  if (!rows.length) {
+    resultsDiv.innerHTML = "<div class='notice'>Aucune association trouvée pour ce code postal.</div>";
+    return;
+  }
+  const r = rows[0];
+  let html = "";
+  // AHM
+  let ahmList = [];
+  for (let i=1;i<=7;i++) {
+    const name = r[`AHM ${i}`];
+    const url = r[`Site web AHM ${i}`];
+    if (name) ahmList.push(linkify(name,url));
+  }
+  if (ahmList.length > 1) {
+    html += "<div class='notice'><strong>Plusieurs associations de hockey mineur (AHM) s’affichent pour ce secteur.</strong><br>Ce n’est pas un choix libre : veuillez vérifier avec les organisations ci-dessous que c’est bien la vôtre AVANT de procéder à l’inscription.</div>";
+    if (ahmList.some(x=>x.includes("NDG"))) {
+      html += "<div class='notice'><strong>NDG :</strong> Veuillez d’abord vérifier la <a target='_blank' href='https://www.google.com/maps/d/u/0/viewer?mid=1bmwHXo4fsG-sJ5L2suVNeIjWcNo&ll=45.552059466545984%2C-73.72924805&z=11'>carte des territoires de Montréal</a> pour connaître votre association.</div>";
+    }
+  }
+  if (ahmList.length) html += "<div class='block'><h3>Associations de hockey mineur (AHM)</h3>"+ahmList.join("")+"</div>";
+  // AHF
+  let ahfList = [];
+  for (let i=1;i<=3;i++) {
+    const name = i==1 ? r["AHF"] : r[`AHF ${i}`];
+    const url = i==1 ? r["Site web féminin"] : r[`Site web féminin ${i}`];
+    if (name) ahfList.push(linkify(name,url));
+  }
+  if (ahfList.length) html += "<div class='block'><h3>Hockey féminin</h3>"+ahfList.join("")+"</div>";
+  // Hockey adapté
+  if (r["Hockey adapté"]) {
+    html += "<div class='block'><h3>Hockey adapté</h3>"+linkify(r["Hockey adapté"],r["Site web hockey adapté"])+"</div>";
+  }
+  resultsDiv.innerHTML = html;
+}
+</script>
+</body>
+</html>
