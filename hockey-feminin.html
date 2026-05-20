@@ -1,0 +1,3653 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @font-face {
+      font-family: 'Circular Std';
+      src: local('Circular Std'), local('CircularStd'),
+           url('https://fonts.cdnfonts.com/s/16914/CircularStd-Book.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Circular Std', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 8px auto; /* minimal top space */
+      padding: 0 16px;
+    }
+    form {
+      width: 100%;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto 12px auto; /* no extra top margin */
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: block;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #79c6e6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #results {
+      margin-top: 16px;
+      max-width: 720px;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h3 {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+    .result-link {
+      display: block;
+      margin: 8px 0;
+      text-decoration: none;
+      color: #004080;
+      word-break: break-word;
+    }
+    .result-link:hover { text-decoration: underline; }
+    .notice { font-weight: 600; margin-bottom: 12px; }
+    .ndg-note { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="postal-form">
+      <input type="text" id="postal-code" placeholder="Ex. : H3T" required>
+      <button type="submit">Rechercher</button>
+    </form>
+
+    <div id="results"></div>
+  </div>
+
+<script>
+const data = {
+  "G1A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G6A": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7A": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5B": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6B": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Lac-Mégantic",
+        "url": "https://www.ahmlacmegantic.com/fr/index.html"
+      }
+    ]
+  },
+  "G7B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5C": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6C": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G6E": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G6G": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5H": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6H": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1J": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2J": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3J": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5J": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6J": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7J": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8J": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1K": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2K": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3K": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G6K": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7K": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8K": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1L": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2L": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3L": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5L": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6L": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G8L": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5M": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G8M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G2N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5N": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G7N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G6P": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G7P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4R": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G5R": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6R": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G9R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G3S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4S": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6S": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G7S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G1T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4T": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G5T": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G6T": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G7T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G9T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4V": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G5V": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G6V": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1W": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4W": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G6W": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8W": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1X": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4X": {
+    "ahf": [
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G5X": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G6X": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7X": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G9X": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G1Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G5Y": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G6Y": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G7Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G8Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G3Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      }
+    ]
+  },
+  "G4Z": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G5Z": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G6Z": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G8Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G7Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "H1A": {
+    "ahf": [
+      {
+        "nom": "AHMPAT (Zone Est)",
+        "url": "https://www.ahmpat.com/"
+      }
+    ]
+  },
+  "H2A": {
+    "ahf": [
+      {
+        "nom": "AHM Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/"
+      }
+    ]
+  },
+  "H3A": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H4A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      }
+    ]
+  },
+  "H5A": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H7A": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1B": {
+    "ahf": [
+      {
+        "nom": "AHM Pointe-aux-Trembles (Zone Est)",
+        "url": "https://www.ahmpat.com/"
+      }
+    ]
+  },
+  "H2B": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H3B": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H4B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      }
+    ]
+  },
+  "H5B": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H7B": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1C": {
+    "ahf": [
+      {
+        "nom": "Fédération de l'Est (Zone Est)",
+        "url": "https://www.federationdelest.com/"
+      }
+    ]
+  },
+  "H2C": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H3C": {
+    "ahf": [
+      {
+        "nom": "Hockey Sud-Ouest (Zone Est)",
+        "url": "https://www.hockeysudouest.ca/"
+      }
+    ]
+  },
+  "H4C": {
+    "ahf": [
+      {
+        "nom": "Hockey Sud-Ouest (Zone Est)",
+        "url": "https://www.hockeysudouest.ca/"
+      }
+    ]
+  },
+  "H7C": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1E": {
+    "ahf": [
+      {
+        "nom": "Club de Hockey St-Donat / R.D.P. (Zone Est)",
+        "url": "https://www.st-donat-rdp-hockey.com/fr/index.html"
+      }
+    ]
+  },
+  "H2E": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      },
+      {
+        "nom": "AHM Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/"
+      }
+    ]
+  },
+  "H3E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Verdun",
+        "url": "https://www.ahmverdun.com/"
+      }
+    ]
+  },
+  "H4E": {
+    "ahf": [
+      {
+        "nom": "Hockey Sud-Ouest (Zone Est)",
+        "url": "https://www.hockeysudouest.ca/"
+      }
+    ]
+  },
+  "H7E": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1G": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H2G": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      }
+    ]
+  },
+  "H3G": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H4G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Verdun",
+        "url": "https://www.ahmverdun.com/"
+      },
+      {
+        "nom": "Hockey Féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H7G": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9G": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1H": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H2H": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3H": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H4H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Verdun",
+        "url": "https://www.ahmverdun.com/"
+      },
+      {
+        "nom": "Hockey Féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H7H": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Westlake Hockey Féminin",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1J": {
+    "ahf": [
+      {
+        "nom": "AHM d'Anjou (Zone Est)",
+        "url": "https://www.facebook.com/p/Association-de-hockey-mineur-Anjou-AHMA-100081986083905/"
+      }
+    ]
+  },
+  "H2J": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3J": {
+    "ahf": [
+      {
+        "nom": "Hockey Sud-Ouest (Zone Est)",
+        "url": "https://www.hockeysudouest.ca/"
+      }
+    ]
+  },
+  "H4J": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H7J": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9J": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1K": {
+    "ahf": [
+      {
+        "nom": "AHM Anjou (Zone Est)",
+        "url": "https://www.facebook.com/p/Association-de-hockey-mineur-Anjou-AHMA-100081986083905/"
+      }
+    ]
+  },
+  "H2K": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3K": {
+    "ahf": [
+      {
+        "nom": "Hockey Sud-Ouest (Zone Est)",
+        "url": "https://www.hockeysudouest.ca/"
+      }
+    ]
+  },
+  "H4K": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      },
+      {
+        "nom": "Hockey Saint-Laurent (Zone Est)",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7K": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9K": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1L": {
+    "ahf": [
+      {
+        "nom": "Fédération de l'Est (Zone Est)",
+        "url": "https://www.federationdelest.com/"
+      },
+      {
+        "nom": "AHM Pointe-aux-Trembles (Zone Est)",
+        "url": "https://www.ahmpat.com/"
+      }
+    ]
+  },
+  "H2L": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3L": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H4L": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7L": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H1M": {
+    "ahf": [
+      {
+        "nom": "AHM d'Anjou (Zone Est)",
+        "url": "https://www.facebook.com/p/Association-de-hockey-mineur-Anjou-AHMA-100081986083905/"
+      }
+    ]
+  },
+  "H2M": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H3M": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H4M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7M": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H1N": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H2N": {
+    "ahf": [
+      {
+        "nom": "Braves du Nord de Montréal (Zone Est)",
+        "url": "https://www.bravesnm.ca/page/accueil"
+      }
+    ]
+  },
+  "H3N": {
+    "ahf": [
+      {
+        "nom": "AHM de Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/?locale=fr_CA"
+      }
+    ]
+  },
+  "H4N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7N": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8N": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H1P": {
+    "ahf": [
+      {
+        "nom": "AHM St-Léonard (Zone Centre)",
+        "url": "https://www.ahmstleonard.com/fr/index.html"
+      }
+    ]
+  },
+  "H2P": {
+    "ahf": [
+      {
+        "nom": "AHM de Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/?locale=fr_CA"
+      }
+    ]
+  },
+  "H3P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H7P": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H9P": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1R": {
+    "ahf": [
+      {
+        "nom": "AHM St-Léonard (Zone Centre)",
+        "url": "https://www.ahmstleonard.com/fr/index.html"
+      }
+    ]
+  },
+  "H2R": {
+    "ahf": [
+      {
+        "nom": "AHM de Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/?locale=fr_CA"
+      }
+    ]
+  },
+  "H3R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H9R": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1S": {
+    "ahf": [
+      {
+        "nom": "AHM St-Léonard (Zone Centre)",
+        "url": "https://www.ahmstleonard.com/fr/index.html"
+      }
+    ]
+  },
+  "H2S": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      }
+    ]
+  },
+  "H3S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7S": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8S": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H9S": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1T": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      }
+    ]
+  },
+  "H2T": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin St-Laurent",
+        "url": "https://www.hockeystl.com/fr/"
+      }
+    ]
+  },
+  "H7T": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H1V": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H2V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      },
+      {
+        "nom": "AHM Villeray (Zone Centre)",
+        "url": "https://www.ahmvtornade.com/"
+      }
+    ]
+  },
+  "H3V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4V": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte St-Luc",
+        "url": "https://www.cslmha.com/"
+      },
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      }
+    ]
+  },
+  "H7V": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H1W": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H2W": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3W": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4W": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte St-Luc",
+        "url": "https://www.cslmha.com/"
+      }
+    ]
+  },
+  "H7W": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9W": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1X": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      }
+    ]
+  },
+  "H2X": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3X": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Montréal-Ouest",
+        "url": "https://www.mwhhockey.ca/en/index.html"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H4X": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Montréal-Ouest",
+        "url": "https://www.mwhhockey.ca/en/index.html"
+      },
+      {
+        "nom": "Hockey féminin MRO",
+        "url": "https://hockeymro.ca/"
+      }
+    ]
+  },
+  "H7X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H9X": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1Y": {
+    "ahf": [
+      {
+        "nom": "AHM Rosemont Petite-Patrie (Zone Centre)",
+        "url": "https://www.hmrpp.com/fr/index.html"
+      }
+    ]
+  },
+  "H2Y": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3Y": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westmount",
+        "url": "https://ahmw.org/"
+      }
+    ]
+  },
+  "H4Y": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H7Y": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin Laval",
+        "url": "https://www.hockeyfemininlaval.com/fr/index.html"
+      }
+    ]
+  },
+  "H8Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Hockey féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "H1Z": {
+    "ahf": [
+      {
+        "nom": "AHM Villeray (Zone Centre)",
+        "url": "https://www.facebook.com/AHMVTornade/"
+      }
+    ]
+  },
+  "H2Z": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H3Z": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Westmount",
+        "url": "https://ahmw.org/"
+      },
+      {
+        "nom": "Hockey féminin NDG",
+        "url": "https://www.ndghockey.com/fr/"
+      }
+    ]
+  },
+  "H4Z": {
+    "ahf": [
+      {
+        "nom": "Jeunes Sportifs Hochelaga Montréal-Centre (Zone Centre)",
+        "url": "https://www.jsh.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "H8Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin DDO",
+        "url": "https://www.dollardhockey.ca/?lang=fr"
+      },
+      {
+        "nom": "Hockey féminin Westlake",
+        "url": "https://www.hockeywestlake.com/fr/index.html"
+      }
+    ]
+  },
+  "J1A": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J3A": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5A": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J6A": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7A": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8A": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9A": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J2B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J3B": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4B": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5B": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J7B": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8B": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9B": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1C": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J5C": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J7C": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8C": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J1E": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2E": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J3E": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J6E": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7E": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8E": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9E": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1G": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2G": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J3G": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4G": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J7G": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8G": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J1H": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2H": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J3H": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4H": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J7H": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8H": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9H": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1J": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2J": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J4J": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5J": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J6J": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît",
+        "url": "https://www.rockettes.ca/"
+      }
+    ]
+  },
+  "J7J": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9J": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1K": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2K": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J4K": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5K": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J6K": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît",
+        "url": "https://www.rockettes.ca/"
+      }
+    ]
+  },
+  "J7K": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J1L": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2L": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J3L": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4L": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5L": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J7L": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J8L": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9L": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J1M": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2M": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J3M": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4M": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5M": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7M": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J8M": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1N": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2N": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      }
+    ]
+  },
+  "J3N": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4N": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5N": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6N": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît",
+        "url": "https://www.rockettes.ca/"
+      }
+    ]
+  },
+  "J7N": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8N": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J3P": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4P": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J7P": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J9P": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J8P": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1R": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J3R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J6R": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît",
+        "url": "https://www.rockettes.ca/"
+      }
+    ]
+  },
+  "J7R": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8R": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J1S": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2S": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4S": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J6S": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J1T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J2T": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J3T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "J4T": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5T": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6T": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J7T": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J8T": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9T": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J3V": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4V": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "J6V": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7V": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J8V": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J2W": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4W": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5W": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6W": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7W": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J1X": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J2X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J3X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5X": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6X": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7X": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J8X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9X": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J2Y": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J3Y": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4Y": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5Y": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6Y": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J7Y": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8Y": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J1Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J3Z": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J4Z": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J5Z": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J6Z": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J7Z": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J8Z": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J9Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin SLQNE",
+        "url": "https://hockey-feminin.slqne.com/"
+      },
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G0C": {
+    "ahf": [
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G0E": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G0G": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0H": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0J": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G0K": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0L": {
+    "ahf": [
+      {
+        "nom": "Cyclones Hockey Féminin BSL",
+        "url": "https://www.facebook.com/p/Cyclones-Hockey-F%C3%A9minin-BSL-100063466601215/?locale=fr_CA"
+      },
+      {
+        "nom": "La Tempête Gaspésie-Les Îles (Équipes de regroupement)",
+        "url": "https://www.facebook.com/p/La-Temp%C3%AAte-Gasp%C3%A9sie-Les-%C3%8Eles-61556320240202/"
+      }
+    ]
+  },
+  "G0M": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G0N": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      },
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G0P": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G0R": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      }
+    ]
+  },
+  "G0S": {
+    "ahf": [
+      {
+        "nom": "Husky Hockey Féminin",
+        "url": "https://www.facebook.com/huskyfeminin/"
+      },
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      },
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      }
+    ]
+  },
+  "G0T": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Côte-Nord",
+        "url": "https://www.facebook.com/p/Hockey-F%C3%A9minin-C%C3%B4te-Nord-100064622055256/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0V": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin du Saguenay-Lac-Saint-Jean",
+        "url": "https://www.facebook.com/OHFSLSJ"
+      }
+    ]
+  },
+  "G0W": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "G0X": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "G0Y": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Lac-Mégantic",
+        "url": "https://www.ahmlacmegantic.com/fr/index.html"
+      }
+    ]
+  },
+  "G0Z": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Victoriaville",
+        "url": "https://www.facebook.com/p/Hockey-Mineur-F%C3%A9minin-de-Victoriaville-100083039357237/"
+      },
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "J0A": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      }
+    ]
+  },
+  "J0B": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Sherbrooke",
+        "url": "https://www.hockeysherbrooke.qc.ca/fr/index.html"
+      }
+    ]
+  },
+  "J0C": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      },
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "J0E": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      },
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J0G": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      },
+      {
+        "nom": "Hockey féminin Trois-Rivières",
+        "url": "https://ahmtr.ca/"
+      }
+    ]
+  },
+  "J0H": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Drummondville",
+        "url": "https://www.facebook.com/p/Regroupement-Hockey-F%C3%A9minin-Voltigeurs-61564397759397/"
+      },
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J0J": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Yamaska-Missisquoi",
+        "url": "https://www.facebook.com/hockeyfeminin.yamaskamissisquoi/"
+      },
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J0K": {
+    "ahf": [
+      {
+        "nom": "Pionnières de Lanaudière",
+        "url": "https://www.organisationhmfl.com/fr/index.html"
+      }
+    ]
+  },
+  "J0L": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît",
+        "url": "https://www.rockettes.ca/"
+      },
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J0M": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J0N": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J0P": {
+    "ahf": [
+      {
+        "nom": "Hockey Féminin Storm du Sud-Ouest",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      }
+    ]
+  },
+  "J0R": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J0S": {
+    "ahf": [
+      {
+        "nom": "Rockettes du Suroît (Sainte-Martine)",
+        "url": "https://www.rockettes.ca/"
+      },
+      {
+        "nom": "Storm du Sud-Ouest (Huntingdon)",
+        "url": "https://www.facebook.com/StormSOHockeyFeminin/?locale=fr_CA"
+      },
+      {
+        "nom": "Association de hockey féminin du Richelieu",
+        "url": "https://hockeyfemininrichelieu.ca/"
+      }
+    ]
+  },
+  "J0T": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J0V": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      },
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J0W": {
+    "ahf": [
+      {
+        "nom": "Association Hockey Feminin des Laurentides",
+        "url": "https://www.ahflaurentides.com/fr/index.html"
+      }
+    ]
+  },
+  "J0X": {
+    "ahf": [
+      {
+        "nom": "Association de hockey féminin de la Vallée de la Gatineau",
+        "url": "https://www.ahfvg.ca/"
+      }
+    ]
+  },
+  "J0Y": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  },
+  "J0Z": {
+    "ahf": [
+      {
+        "nom": "Hockey féminin Abitibi-Témiscamingue",
+        "url": "https://www.facebook.com/lynxhockeyat/?locale=fr_CA"
+      }
+    ]
+  }
+};
+
+
+function normalizeFSA(input) {
+  const cleaned = input.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return cleaned.slice(0, 3);
+}
+
+document.getElementById("postal-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const raw = document.getElementById("postal-code").value;
+  const prefixe = normalizeFSA(raw);
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+
+  if (prefixe.length < 3) {
+    container.textContent = "Veuillez entrer les 3 premiers caractères de votre code postal (ex. : H3T).";
+    return;
+  }
+
+  const resultat = data[prefixe];
+
+  if (!resultat || !resultat.ahf || resultat.ahf.length === 0) {
+    container.textContent = "Aucune association de hockey féminin trouvée pour ce code postal.";
+    return;
+  }
+
+  const ahfHeader = document.createElement("h3");
+  ahfHeader.textContent = "Hockey féminin";
+  container.appendChild(ahfHeader);
+
+  resultat.ahf.forEach(assoc => {
+    const link = document.createElement("a");
+    link.href = assoc.url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = assoc.nom;
+    link.className = "result-link";
+    container.appendChild(link);
+  });
+});
+
+</script>
+
+</body>
+</html>
