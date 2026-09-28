@@ -71,6 +71,9 @@
     .result-link:hover { text-decoration: underline; }
     .notice { font-weight: 600; margin-bottom: 12px; }
     .ndg-note { margin-bottom: 12px; }
+    .contact-section { margin-top: 20px; }
+    .contact-section p { margin: 8px 0; }
+    .contact-item { overflow-wrap: anywhere; }
   </style>
 </head>
 <body>
@@ -3638,6 +3641,53 @@ const jshFemaleAssociation = {
   url: "https://www.jsh.qc.ca/fr/index.html"
 };
 
+const femaleHockeyContacts = {
+  "Hockey féminin - Jeunes Sportifs Hochelaga Montréal-Centre": {
+    nom: "Martin Laurin",
+    courriel: "hockeyfemininjsh@gmail.com"
+  },
+  "Hockey Féminin - Rosemont Petite-Patrie": {
+    nom: "Jean-Baptiste Vergé",
+    courriel: "directeurhockeyfeminin@hmrpp.com"
+  },
+  "Hockey Féminin - Saint-Léonard": {
+    nom: "Christopher Romano",
+    courriel: "directeurm11@ahmstleonard.com"
+  },
+  "Hockey Féminin - Villeray": {
+    nom: "Axel Séguin",
+    courriel: "axel.seguin@proton.me"
+  },
+  "Hockey Féminin - Anjou": {
+    nom: "Marik Tremblay",
+    courriel: "marik.tremblay@gmail.com"
+  },
+  "Hockey Féminin - Club de Hockey St-Donat / R.D.P.": {
+    nom: "Paolo DeRubertis",
+    courriel: "president@st-donat-rdp-hockey.com"
+  },
+  "Hockey Féminin - Fédération de l'est": {
+    nom: "Luciano Parillo",
+    courriel: "lucianoparillo27@gmail.com"
+  },
+  "Hockey Féminin - Pointe-aux-Trembles": {
+    nom: "Jose Merlos",
+    courriel: "vphockey@ahmpat.com"
+  },
+  "Hockey Féminin - Hockey Sud-Ouest": {
+    nom: "Geneviève Plante",
+    courriel: "gdelaplante@allezup.com"
+  },
+  "Hockey Féminin - NDG": {
+    nom: "Brenda Gallant",
+    courriel: "brendagallant@ndghockey.com"
+  },
+  "Hockey Féminin - Braves du Nord de Montréal": {
+    nom: "Guy Beauvais",
+    courriel: "guy.beauvais@yahoo.ca"
+  }
+};
+
 function normalizePostalCode(input) {
   return input.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
 }
@@ -3742,6 +3792,38 @@ document.getElementById("postal-form").addEventListener("submit", function (e) {
     link.className = "result-link";
     container.appendChild(link);
   });
+
+  const contacts = resultat.ahf
+    .map(assoc => ({ association: assoc.nom, contact: femaleHockeyContacts[assoc.nom] }))
+    .filter(item => item.contact);
+
+  if (contacts.length > 0) {
+    const section = document.createElement("div");
+    section.className = "contact-section";
+
+    const intro = document.createElement("p");
+    intro.textContent = contacts.length === 1
+      ? "Des questions sur le hockey féminin? Vous pouvez communiquer avec la personne responsable de cette association :"
+      : "Des questions sur le hockey féminin? Vous pouvez communiquer avec les personnes responsables de ces associations :";
+    section.appendChild(intro);
+
+    contacts.forEach(({ association, contact }) => {
+      const ligne = document.createElement("p");
+      ligne.className = "contact-item";
+      const associationNom = document.createElement("strong");
+      associationNom.textContent = association + " : ";
+      ligne.appendChild(associationNom);
+      ligne.appendChild(document.createTextNode(contact.nom + " — "));
+
+      const courriel = document.createElement("a");
+      courriel.href = "mailto:" + contact.courriel;
+      courriel.textContent = contact.courriel;
+      ligne.appendChild(courriel);
+      section.appendChild(ligne);
+    });
+
+    container.appendChild(section);
+  }
 });
 
 </script>
